@@ -4,9 +4,11 @@ const expressWinston = require('express-winston')
 const winston = require('winston')
 const swaggerUi = require('swagger-ui-express')
 const debug = require('debug')('botium-speech-processing-server')
+var cors = require('cors')
 
 const app = express()
 const port = process.env.PORT || 56000
+
 
 const apiTokens = (process.env.BOTIUM_API_TOKENS && process.env.BOTIUM_API_TOKENS.split(/[\s,]+/)) || []
 if (apiTokens.length === 0) {
@@ -19,6 +21,9 @@ app.use(bodyParser.json())
 app.use(bodyParser.text())
 app.use(bodyParser.raw({ type: 'audio/*', limit: process.env.BOTIUM_SPEECH_UPLOAD_LIMIT }))
 app.use(bodyParser.urlencoded({ extended: false }))
+
+app.use(cors())
+
 if (debug.enabled) {
   app.use(expressWinston.logger({
     transports: [

@@ -4,8 +4,8 @@ const mkdirp = require('mkdirp')
 const crypto = require('crypto')
 const express = require('express')
 const sanitize = require('sanitize-filename')
-const { runsox } = require('./convert/sox')
-const { wer } = require('./utils')
+
+
 const debug = require('debug')('botium-speech-processing-routes')
 
 const cachePathStt = process.env.BOTIUM_SPEECH_CACHE_DIR && path.join(process.env.BOTIUM_SPEECH_CACHE_DIR, 'stt')
@@ -181,12 +181,10 @@ router.get('/api/tts/:language', async (req, res, next) => {
         try {
           const name = fs.readFileSync(cacheFileName).toString()
           const buffer = fs.readFileSync(cacheFileBuffer)
-          debug(`Reading tts result ${cacheFileName} from cache: ${name}`)
-          res.writeHead(200, {
-            'Content-disposition': `attachment; filename="${name}"`,
-            'Content-Length': buffer.length
-          })
-          return res.end(buffer)
+          debug(`Reading tts result ${cacheFileName} from cache: ${name}`);
+          
+
+          return res.json(buffer).end();
         } catch (err) {
           debug(`Failed reading tts result ${cacheFileName} from cache: ${err.message}`)
         }
@@ -199,11 +197,8 @@ router.get('/api/tts/:language', async (req, res, next) => {
         language: req.params.language,
         text: req.query.text
       })
-      res.writeHead(200, {
-        'Content-disposition': `attachment; filename="${name}"`,
-        'Content-Length': buffer.length
-      })
-      res.end(buffer)
+      
+      res.json(buffer).end();
 
       if (cachePathTts) {
         fs.writeFileSync(cacheFileName, name)
@@ -218,109 +213,8 @@ router.get('/api/tts/:language', async (req, res, next) => {
   }
 })
 
-/**
- * @swagger
- * /api/convert/{profile}:
- *   post:
- *     description: Convert audio file
- *     security:
- *       - ApiKeyAuth: []
- *     produces:
- *       - audio/*
- *     parameters:
- *       - name: profile
- *         description: Conversion profile (for example WAVTOMONOWAV, MP3TOMONOWAV)
- *         in: path
- *         required: true
- *         schema:
- *           type: string
- *       - name: start
- *         description: Start Timecode within audio stream (01:32)
- *         in: query
- *         schema:
- *           type: string
- *           pattern: '^([0-5][0-9]):([0-5][0-9])$'
- *       - name: end
- *         description: End Timecode within audio stream (02:48)
- *         in: query
- *         schema:
- *           type: string
- *           pattern: '^([0-5][0-9]):([0-5][0-9])$'
- *     requestBody:
- *       description: Audio file
- *       content:
- *         audio/*:
- *           schema:
- *             type: string
- *             format: binary
- *     responses:
- *       200:
- *         description: Audio file
- *         content:
- *           audio/*:
- *             schema:
- *               type: string
- *               format: binary
- */
-router.post('/api/convert/:profile', async (req, res, next) => {
-  if (!Buffer.isBuffer(req.body)) {
-    return next(new Error('req.body is not a buffer'))
-  }
-  const envVarSox = `BOTIUM_SPEECH_CONVERT_PROFILE_${req.params.profile.toUpperCase()}_SOX`
-  if (!process.env[envVarSox]) {
-    return next(new Error(`Environment variable ${envVarSox} empty`))
-  }
-  const envVarOutput = `BOTIUM_SPEECH_CONVERT_PROFILE_${req.params.profile.toUpperCase()}_OUTPUT`
-  if (!process.env[envVarOutput]) {
-    return next(new Error(`Environment variable ${envVarOutput} empty`))
-  }
 
-  try {
-    const outputBuffer = await runsox(process.env[envVarSox], { inputBuffer: req.body, start: req.query.start, end: req.query.end })
-    res.writeHead(200, {
-      'Content-disposition': `attachment; filename="${process.env[envVarOutput]}"`,
-      'Content-Length': outputBuffer.length
-    })
-    res.end(outputBuffer)
-  } catch (err) {
-    return next(err)
-  }
-})
 
-/**
- * @swagger
- * /api/wer:
- *   get:
- *     description: Calculate Levenshtein edit distance between two strings (word error rate)
- *     security:
- *       - ApiKeyAuth: []
- *     produces:
- *       - application/json
- *     parameters:
- *       - name: text1
- *         description: Text
- *         in: query
- *         required: true
- *         schema:
- *           type: string
- *       - name: text2
- *         description: Text
- *         in: query
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Levenshtein Edit Distance on word level
- *         schema:
- *           properties:
- *             distance:
- *               type: integer
- *             wer:
- *               type: number
- */
-router.get('/api/wer', async (req, res) => {
-  res.json(await wer(req.query.text1, req.query.text2))
-})
+
 
 module.exports = router
