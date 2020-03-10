@@ -50,6 +50,16 @@
      - > sudo curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
      - > sudo chmod +x /usr/local/bin/docker-compose
      - > docker-compose --version
+     
+ - Step 6: Now we will clone the `botium-speech-processing` repo and build the tools:
+    - > git clone https://github.com/JiteshGaikwad/botium-speech-processing
+    
+ - Step 7: Once you have cloned the repo, go to the `botium-speech-processing` folder and run the below command
+    - > cd botium-speech-processing
+    - > docker-compose up -d
+ 
+ - Step 8: It will take some time to compile and setup the tools.
+ 
     
         
 
