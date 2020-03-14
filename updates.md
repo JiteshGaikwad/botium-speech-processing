@@ -19,6 +19,10 @@ updated: https://github.com/JiteshGaikwad/botium-speech-processing/blob/master/n
 
 removed the german langauge docker files
 
+original: https://github.com/codeforequity-at/botium-speech-processing/tree/master/stt
+
+updated: https://github.com/JiteshGaikwad/botium-speech-processing/tree/master/stt
+
 ## **tts**
 
 I have forked the original MaryTTS installer and updated the components.json file which contains the voices that needs to be downloaded.
