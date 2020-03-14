@@ -10,6 +10,7 @@ updated: https://github.com/JiteshGaikwad/botium-speech-processing/blob/master/d
 
 ## **nginx.conf**
 Removed the below endpoints for stt_de and dictate services
+
 original:https://github.com/codeforequity-at/botium-speech-processing/blob/master/nginx.conf
 
 updated: https://github.com/JiteshGaikwad/botium-speech-processing/blob/master/nginx.conf
@@ -23,9 +24,11 @@ removed the german langauge docker files
 I have forked the original MaryTTS installer and updated the components.json file which contains the voices that needs to be downloaded.
 
 original: https://github.com/marytts/marytts-installer/blob/master/components.json
+
 updated: https://github.com/JiteshGaikwad/marytts-installer/blob/master/components.json
 
 original: https://github.com/codeforequity-at/botium-speech-processing/blob/master/tts/Dockerfile.marytts
+
 updated: https://github.com/JiteshGaikwad/botium-speech-processing/blob/master/tts/Dockerfile.marytts
 
 ## **frontend**:
@@ -34,6 +37,7 @@ updated: https://github.com/JiteshGaikwad/botium-speech-processing/blob/master/t
  
 original:
 - https://github.com/codeforequity-at/botium-speech-processing/blob/master/frontend/src/server.js
+
 - https://github.com/codeforequity-at/botium-speech-processing/blob/master/frontend/src/routes.js
 
 updated:
